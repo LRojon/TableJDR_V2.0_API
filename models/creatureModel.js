@@ -29,7 +29,7 @@ const schema = new Schema ({
         },
         wis: {
             val: Number,
-            mod: -1
+            mod: Number
         },
         cha: {
             val: Number,
@@ -37,8 +37,8 @@ const schema = new Schema ({
         }
     },
     skills: [String],
-    sense: [String],
-    language: [String],
+    senses: [String],
+    languages: [String],
     dangerousness: String,
     xp: Number,
     abilities: [
@@ -56,15 +56,11 @@ const schema = new Schema ({
                 range: String,
                 numTarget: Number
             },
-            dmg: {
-                stable: Number,
-                random: String,
-                type: String
-            }
+            dmg: Object
         }
     ]
 })
 
 const CreatureModel = mongoose.model('creature', schema, 'creatures')
 
-module.exports = { CreatureModel }
+module.exports = CreatureModel
