@@ -85,6 +85,7 @@ Une API permettant de récupérer tout ou partie des créatures présentent dans
             }
         ]
     ```
+  
 </details>  
   
 ## Obtenir une créature
@@ -160,6 +161,7 @@ Une API permettant de récupérer tout ou partie des créatures présentent dans
             ]
         }
     ```
+  
 </details>
 
 ## Obtenir tout les noms des créatures
@@ -177,4 +179,5 @@ Une API permettant de récupérer tout ou partie des créatures présentent dans
             String
         ]
     ```
+  
 </details>
