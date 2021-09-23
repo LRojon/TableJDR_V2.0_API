@@ -19,7 +19,7 @@ Une API permettant de récupérer tout ou partie des créatures présentent dans
 <details>
     <summary> Retour </summary>
 
-    ```JS
+    ```js
         [
             {
                 name: String,
@@ -96,7 +96,7 @@ Une API permettant de récupérer tout ou partie des créatures présentent dans
 <details>
     <summary> Retour </summary>
 
-    ```JS
+    ```js
         {
             name: String,
             type: String,
@@ -170,7 +170,7 @@ Une API permettant de récupérer tout ou partie des créatures présentent dans
 <details>
     <summary> Retour </summary>
 
-    ```JS
+    ```js
         [
             String,
             String,
