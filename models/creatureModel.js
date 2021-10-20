@@ -9,7 +9,8 @@ const schema = new Schema ({
         stable: Number,
         random: String
     },
-    speed: Number,
+    speed: String,
+    armor: { type: Number, default: 10 },
     stats: {
         str: {
             val: Number,
@@ -50,12 +51,7 @@ const schema = new Schema ({
     actions: [
         {
             name: String,
-            effect: {
-                name: String,
-                accuracy: Number,
-                range: String,
-                numTarget: Number
-            },
+            effect: Object,
             dmg: Object
         }
     ]
