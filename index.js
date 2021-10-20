@@ -5,6 +5,7 @@ const cors = require('cors')
 require('./models/dbConfig')
 require('dotenv').config()
 const creatures = require('./routes/CreatureController')
+const players = require('./routes/PlayerController')
 
 app.use(express.json())
 app.use(cors())
@@ -16,5 +17,6 @@ app.use(function(req, res, next) {
     next()
 })
 app.use('/creatures', creatures)
+app.use('/players', players)
 
 app.listen(8102, () => {console.log("App started, and listen on port 8102.")})
