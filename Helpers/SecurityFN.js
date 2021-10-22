@@ -35,7 +35,7 @@ const generateToken = (user) => {
         name: user.username.substring(0, 3),
         expired: addDays(new Date(), 2).getTime()
     }
-    let token = btoa(JSON.stringify(body)).toString()
+    let token = window.btoa(JSON.stringify(body)).toString()
 
     return token
 }
