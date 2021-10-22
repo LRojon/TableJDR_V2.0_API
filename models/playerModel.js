@@ -33,7 +33,8 @@ const schema = new Schema ({
         }
     },
     lvl: Number,
-    mastery: [String]
+    mastery: [String],
+    owner: Schema.Types.ObjectId
 })
 
 const PlayerModel = mongoose.model('player', schema, 'players')

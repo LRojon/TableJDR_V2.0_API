@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const PlayerModel = require('../models/playerModel')
+const { UserModel, TokenModel } = require('../models/userModel')
 
 router.get('/get/all', (req, res) => { // Get All
     PlayerModel.find({}, (err, docs) => {
@@ -50,36 +51,87 @@ router.get('/get/name/:name', (req, res) => {
 })
 
 router.post('/set/one', (req, res) => { // Create One / Update One
-    PlayerModel.find({ name: req.body.name}, (err, docs) => {
-        if(err) { console.log(err) }
+    TokenModel.findOne({ token: req.body.token }, (err, token) => {
+        if(err) { console.log(err); }
         else {
-            if(docs.length != 0) {
-                PlayerModel.replaceOne({name: req.body.name}, req.body, (err, doc) => {
-                    if(err) { console.log(err) }
-                    else { res.status(200).send('Updated successfully.') }
-                })
+            if(token !== null) {
+                if(token.expirationDate.getTime() > Date.now()) {
+                    UserModel.findOne({ _id: token.owner }, (err, user) => {
+                        if(err) { console.log(err); }
+                        else {
+                            if(user !== null) {
+                                PlayerModel.find({ name: req.body.character.name, owner: user._id}, (err, docs) => {
+                                    if(err) { console.log(err) }
+                                    else {
+                                        let char = {...req.body.character}
+                                        char['owner'] = user._id
+                                        if(docs.length != 0) {
+                                            PlayerModel.replaceOne({name: char.name}, char, (err, doc) => {
+                                                if(err) { console.log(err) }
+                                                else { res.status(200).send('Updated successfully.') }
+                                            })
+                                        }
+                                        else {
+                                            PlayerModel.create(char, (err) => {
+                                                if(err) { console.log(err) }
+                                                else {
+                                                    res.status(201).send('Created successfully.') 
+                                                }
+                                            })
+                                        }
+                                    }
+                                })
+                            }
+                            else {
+                                res.status(400).send('This token hasn\'t an owner')
+                            }
+                        }
+                    })
+                }
+                else {
+                    res.status(400).send('Token expired')
+                }
             }
             else {
-                PlayerModel.create(req.body, (err) => {
-                    if(err) { console.log(err) }
-                    else {
-                        res.status(201).send('Created successfully.') 
-                    }
-                })
+                res.status(404).send('Token was not found')
             }
         }
     })
 })
 
-/*router.get('/del/one/:id', (req, res) => {
-    if(req.params.id.length != 24) { res.send(404).send('Wrong id') }
-    PlayerModel.deleteOne({_id: req.params.id}, (err, result) => {
-        if(err) { console.log(err) }
+router.post('/del/one', (req, res) => {
+    TokenModel.findOne({ token: req.body.token }, (err, token) => {
+        if(err) { console.log(err); }
         else {
-            if(result.deletedCount != 0) { res.status(200).send('Deleted successfully.') }
-            else { res.status(404).send('Wrong id') }
+            if(token === null) {
+                res.status(404).send('Token was not found')
+            }
+            else {
+                if(token.expirationDate.getTime() < Date.now()) {
+                    res.send(400).send('Token expired')
+                }
+                else {
+                    UserModel.findOne({ _id: token.owner }, (err, user) => {
+                        if(err) { console.log(err); }
+                        else {
+                            if(user === null) {
+                                res.status(400).send('This token hasn\'t an owner')
+                            }
+                            else {
+                                PlayerModel.deleteOne({_id: req.body.character_id, owner: user._id}, (err, result) => {
+                                    if(err) { console.log(err) }
+                                    else {
+                                        if(result.deletedCount != 0) { res.status(200).send('Deleted successfully.') }
+                                        else { res.status(404).send('Wrong id or you aren\'t the owner') }
+                                    }
+                                })
+                            }
+                        }
+                    })
+                }
+            }
         }
     })
-})*/
+})
 
 module.exports = router
