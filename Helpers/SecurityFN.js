@@ -1,3 +1,5 @@
+const crypto = require('crypto')
+
 const isTheTokenOwner = (token, username, res, callback) => {
     UserModel.findOne({ username: username }, (err, user) => {
         if(err) { console.log(err) }
@@ -35,7 +37,7 @@ const generateToken = (user) => {
         name: user.username.substring(0, 3),
         expired: addDays(new Date(), 2).getTime()
     }
-    let token = window.btoa(JSON.stringify(body)).toString()
+    let token = crypto.createHash('sha256').update(JSON.stringify(body)).digest('hex')
 
     return token
 }
