@@ -40,10 +40,6 @@ router.post('/login', (req, res) => { // login follow graph on white board
                     else {
                         if(token === null) {
                             let tmp = generateToken(user)
-                            console.log({
-                                owner: user._id,
-                                token: tmp
-                            })
                             TokenModel.create({
                                 owner: user._id,
                                 token: tmp

@@ -5,10 +5,26 @@ const PartyModel = require('../models/partyModel')
 const { UserModel, TokenModel } = require('../models/userModel')
 
 router.get('/get/all', (req, res) => { // Get All
-    PartyModel.find({}, (err, docs) => {
+    TokenModel.findOne({ token: req.body.token }, (err, token) => {
         if(err) { console.log(err) }
         else {
-            res.send(docs) 
+            console.log(token)
+            if(token === null) {
+                res.status(400).send('Token doesn\'t exist')
+            }
+            else {
+                if(token.expirationDate.getTime() < Date.now()) {
+                    res.status(400).send('Token expired')
+                }
+                else {
+                    PartyModel.find({ owner: token.owner }, (err, docs) => {
+                        if(err) { console.log(err) }
+                        else {
+                            res.send(docs.sort((a, b) => a.name < b.name ? -1 : 1)) 
+                        }
+                    })
+                }
+            }
         }
     })
 })

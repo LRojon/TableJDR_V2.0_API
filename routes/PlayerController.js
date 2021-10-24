@@ -5,10 +5,26 @@ const PlayerModel = require('../models/playerModel')
 const { UserModel, TokenModel } = require('../models/userModel')
 
 router.get('/get/all', (req, res) => { // Get All
-    PlayerModel.find({}, (err, docs) => {
+    TokenModel.findOne({ token: req.body.token }, (err, token) => {
         if(err) { console.log(err) }
         else {
-            res.send(docs) 
+            console.log(token)
+            if(token === null) {
+                res.status(400).send('Token doesn\'t exist')
+            }
+            else {
+                if(token.expirationDate.getTime() < Date.now()) {
+                    res.status(400).send('Token expired')
+                }
+                else {
+                    PlayerModel.find({ owner: token.owner }, (err, docs) => {
+                        if(err) { console.log(err) }
+                        else {
+                            res.send(docs) 
+                        }
+                    })
+                }
+            }
         }
     })
 })
@@ -41,11 +57,28 @@ router.get('/get/id/:id', (req, res) => {
 })
 
 router.get('/get/name/:name', (req, res) => {
-    PlayerModel.findOne({ name: req.params.name }, (err, doc) => {
+    
+    TokenModel.findOne({ token: req.body.token }, (err, token) => {
         if(err) { console.log(err) }
         else {
-            if(doc != null) { res.send(doc) }
-            else { res.status(404).send('Wrong name') }
+            console.log(token)
+            if(token === null) {
+                res.status(400).send('Token doesn\'t exist')
+            }
+            else {
+                if(token.expirationDate.getTime() < Date.now()) {
+                    res.status(400).send('Token expired')
+                }
+                else {
+                    PlayerModel.findOne({ name: req.params.name, owner: token.owner }, (err, doc) => {
+                        if(err) { console.log(err) }
+                        else {
+                            if(doc != null) { res.send(doc) }
+                            else { res.status(404).send('Wrong name') }
+                        }
+                    })
+                }
+            }
         }
     })
 })

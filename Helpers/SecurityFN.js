@@ -37,7 +37,7 @@ const generateToken = (user) => {
         name: user.username.substring(0, 3),
         expired: addDays(new Date(), 2).getTime()
     }
-    let token = crypto.createHash('sha256').update(JSON.stringify(body)).digest('hex')
+    let token = crypto.createHash('sha256').update(JSON.stringify(body)).digest('base64')
 
     return token
 }
