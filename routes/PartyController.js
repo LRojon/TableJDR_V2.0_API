@@ -66,6 +66,17 @@ router.get('/get/name/:name', (req, res) => {
     })
 })
 
+/*
+Entry
+{
+    token: String,
+    party: {
+        [oldName: String]
+        name: String,
+        players: [String]
+    }
+}
+*/
 router.post('/set/one', (req, res) => { // Create One / Update One
     TokenModel.findOne({ token: req.body.token }, (err, token) => {
         if(err) { console.log(err) }

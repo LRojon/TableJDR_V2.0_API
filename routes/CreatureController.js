@@ -12,6 +12,25 @@ router.get('/get/all', (req, res) => { // Get All
     })
 })
 
+router.get('/get/all/low', (req, res) => {  // Get All Data for treeView
+    CreatureModel.find({}, (err, docs) => {
+        if(err) { console.log(err) }
+        else {
+            let data = []
+            docs.forEach(doc => {
+                data.push({
+                    name: doc.name,
+                    type: doc.type,
+                    dangerousness: doc.dangerousness,
+                    armor: doc.armor,
+                    xp: doc.xp
+                })
+            })
+            res.send(data)
+        }
+    })
+})
+
 router.get('/get/all/name', (req, res) => { // Get All Names
     CreatureModel.find({}, (err, docs) => {
         if(err) { console.log(err) }
